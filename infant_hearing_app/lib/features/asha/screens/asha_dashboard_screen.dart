@@ -6,6 +6,7 @@ import '../providers/asha_provider.dart';
 import '../widgets/asha_id_badge_widget.dart';
 import '../widgets/village_tile_widget.dart';
 import '../widgets/asha_stats_card.dart';
+import '../widgets/asha_emergency_referral_sheet.dart';
 import 'package:infant_hearing_app/core/theme/app_colors.dart';
 import 'package:infant_hearing_app/core/theme/app_spacing.dart';
 import 'package:infant_hearing_app/core/theme/app_text_styles.dart';
@@ -147,12 +148,36 @@ class AshaDashboardScreen extends StatelessWidget {
                           child: _QuickActionButton(
                             icon: Icons.sync_rounded,
                             label: 'Sync Data',
-                            onTap: () {},
+                            onTap: () => _syncData(context, provider),
                             color: AppColors.secondary,
                           ),
                         ),
                       ],
                     ).animate().fadeIn(delay: 400.ms),
+
+                    const SizedBox(height: AppSpacing.m),
+
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _QuickActionButton(
+                            icon: Icons.medical_information_rounded,
+                            label: 'Referrals',
+                            onTap: () => context.push(RouteConstants.ashaReferralManagement),
+                            color: AppColors.error,
+                          ),
+                        ),
+                        const SizedBox(width: AppSpacing.m),
+                        Expanded(
+                          child: _QuickActionButton(
+                            icon: Icons.event_available_rounded,
+                            label: 'Follow-ups',
+                            onTap: () => context.push(RouteConstants.ashaFollowups),
+                            color: AppColors.accent,
+                          ),
+                        ),
+                      ],
+                    ).animate().fadeIn(delay: 500.ms),
 
                     const SizedBox(height: AppSpacing.xl),
 
@@ -165,7 +190,7 @@ class AshaDashboardScreen extends StatelessWidget {
                           style: AppTextStyles.caption.copyWith(fontWeight: FontWeight.w800, letterSpacing: 1.2),
                         ),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () => context.push(RouteConstants.ashaAllScreenings),
                           child: const Text('View All'),
                         ),
                       ],
@@ -212,13 +237,21 @@ class AshaDashboardScreen extends StatelessWidget {
             ],
           ),
           floatingActionButton: FloatingActionButton.extended(
-            onPressed: () {},
+            onPressed: () => showEmergencyReferralSheet(context),
             label: const Text('Emergency Referral'),
             icon: const Icon(Icons.emergency_rounded),
             backgroundColor: AppColors.error,
           ),
         );
       },
+    );
+  }
+
+  Future<void> _syncData(BuildContext context, AshaProvider provider) async {
+    await provider.refresh();
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Data synced')),
     );
   }
 

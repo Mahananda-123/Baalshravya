@@ -23,6 +23,7 @@ class QuestionnaireProvider extends ChangeNotifier {
   bool _isCompleted = false;
   ScoringResult? _scoringResult;
   int _babyAgeMonths = 0;
+  QuestionnaireRespondent _respondent = QuestionnaireRespondent.parent;
 
   List<QuestionnaireSection> get sections => _sections;
   Map<String, AnswerValue> get answers => Map.unmodifiable(_answers);
@@ -30,6 +31,8 @@ class QuestionnaireProvider extends ChangeNotifier {
   bool get isCompleted => _isCompleted;
   ScoringResult? get scoringResult => _scoringResult;
   int get babyAgeMonths => _babyAgeMonths;
+  QuestionnaireRespondent get respondent => _respondent;
+  bool get isAshaRespondent => _respondent == QuestionnaireRespondent.ashaWorker;
 
   QuestionnaireSection get currentSection => _sections[_currentSectionIndex];
   bool get isFirstSection => _currentSectionIndex == 0;
@@ -63,9 +66,16 @@ class QuestionnaireProvider extends ChangeNotifier {
         .every((q) => _answers[q.id] != null && _answers[q.id] != AnswerValue.unanswered);
   }
 
-  void initialize(int babyAgeMonths) {
+  void initialize(
+    int babyAgeMonths, {
+    QuestionnaireRespondent respondent = QuestionnaireRespondent.parent,
+  }) {
     _babyAgeMonths = babyAgeMonths;
-    _sections = QuestionnaireData.getSections(babyAgeMonths: babyAgeMonths);
+    _respondent = respondent;
+    _sections = QuestionnaireData.getSections(
+      babyAgeMonths: babyAgeMonths,
+      respondent: respondent,
+    );
     _answers.clear();
     _currentSectionIndex = 0;
     _isCompleted = false;
@@ -184,10 +194,12 @@ class QuestionnaireProvider extends ChangeNotifier {
   static const String _keyCompleted = '${_keyPrefix}completed';
   static const String _keyScoring = '${_keyPrefix}scoring';
   static const String _keyAge = '${_keyPrefix}age';
+  static const String _keyRespondent = '${_keyPrefix}respondent';
 
   void _saveToStorage() {
     storage.setBool(_keyCompleted, value: _isCompleted);
     storage.setInt(_keyAge, _babyAgeMonths);
+    storage.setInt(_keyRespondent, _respondent.index);
     if (_scoringResult != null) {
       final map = {
         'totalScore': _scoringResult!.totalScore,
@@ -203,6 +215,10 @@ class QuestionnaireProvider extends ChangeNotifier {
   void _loadFromStorage() {
     _isCompleted = storage.getBool(_keyCompleted) ?? false;
     _babyAgeMonths = storage.getInt(_keyAge) ?? 0;
+    final respondentIndex = storage.getInt(_keyRespondent);
+    if (respondentIndex != null && respondentIndex >= 0 && respondentIndex < QuestionnaireRespondent.values.length) {
+      _respondent = QuestionnaireRespondent.values[respondentIndex];
+    }
     final scoringStr = storage.getString(_keyScoring);
     if (scoringStr != null) {
       try {
@@ -218,7 +234,10 @@ class QuestionnaireProvider extends ChangeNotifier {
         );
         // Also re-initialize sections if we have age
         if (_babyAgeMonths > 0) {
-          _sections = QuestionnaireData.getSections(babyAgeMonths: _babyAgeMonths);
+          _sections = QuestionnaireData.getSections(
+            babyAgeMonths: _babyAgeMonths,
+            respondent: _respondent,
+          );
         }
       } catch (e) {
         debugPrint('QuestionnaireProvider: Error loading scoring result: $e');
@@ -230,5 +249,6 @@ class QuestionnaireProvider extends ChangeNotifier {
     storage.remove(_keyCompleted);
     storage.remove(_keyScoring);
     storage.remove(_keyAge);
+    storage.remove(_keyRespondent);
   }
 }

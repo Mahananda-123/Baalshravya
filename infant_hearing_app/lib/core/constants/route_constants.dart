@@ -45,6 +45,7 @@ abstract class RouteConstants {
   static const String ashaDashboard       = '/asha-dashboard';
   static const String ashaVillage         = '/asha-village';
   static const String ashaInfantDetail    = '/asha-infant-detail';
+  static const String ashaAllScreenings   = '/asha-all-screenings';
   static const String ashaBatchRegistration = '/asha-batch-registration';
   static const String ashaBoaTest         = '/asha-boa-test';
   static const String ashaChildRegistration = '/asha-child-registration';
@@ -54,4 +55,8 @@ abstract class RouteConstants {
   static const String ashaNotifications     = '/asha-notifications';
   static const String ashaChildReport       = '/asha-child-report';
   static const String ashaAshaReport        = '/asha-report';
+
+  // ── Parent Module ────────────────────────────────────────────────
+  static const String parentReferrals = '/parent-referrals';
+  static const String parentFollowups = '/parent-followups';
 }

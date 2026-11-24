@@ -125,7 +125,10 @@ class _InfantHeader extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(infant.name, style: AppTextStyles.h3),
-                    Text('ID: ${infant.childId.substring(0, 8).toUpperCase()}', style: AppTextStyles.caption),
+                    Text(
+                      'ID: ${infant.childId.length >= 8 ? infant.childId.substring(0, 8).toUpperCase() : infant.childId}',
+                      style: AppTextStyles.caption,
+                    ),
                     const SizedBox(height: 4),
                     Row(
                       children: [

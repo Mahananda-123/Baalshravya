@@ -21,6 +21,9 @@ import 'package:infant_hearing_app/features/asha/screens/asha_dashboard_screen.d
 import 'package:infant_hearing_app/features/asha/screens/asha_login_screen.dart';
 import 'package:infant_hearing_app/features/asha/screens/asha_village_screen.dart';
 import 'package:infant_hearing_app/features/asha/screens/asha_infant_detail_screen.dart';
+import 'package:infant_hearing_app/features/asha/screens/asha_all_screenings_screen.dart';
+import 'package:infant_hearing_app/features/asha/screens/asha_referral_management_screen.dart';
+import 'package:infant_hearing_app/features/asha/screens/asha_followups_screen.dart';
 import 'package:infant_hearing_app/features/asha/screens/batch_registration_screen.dart';
 import 'package:infant_hearing_app/features/boa/presentation/pages/boa_intro_screen.dart';
 import 'package:infant_hearing_app/features/boa/presentation/pages/boa_wizard_screen.dart';
@@ -38,6 +41,8 @@ import 'package:infant_hearing_app/features/baby/screens/child_detail_screen.dar
 import 'package:infant_hearing_app/features/baby/screens/baby_profile_screen.dart';
 import 'package:infant_hearing_app/features/parent/screens/parent_profile_screen.dart';
 import 'package:infant_hearing_app/features/parent/screens/simple_parent_profile_screen.dart';
+import 'package:infant_hearing_app/features/parent/screens/parent_referrals_screen.dart';
+import 'package:infant_hearing_app/features/parent/screens/parent_followups_screen.dart';
 import 'package:infant_hearing_app/data/models/v2/child.dart';
 
 class AppRouter {
@@ -166,6 +171,26 @@ class AppRouter {
       GoRoute(
         path: RouteConstants.ashaBatchRegistration,
         builder: (context, state) => const BatchRegistrationScreen(),
+      ),
+      GoRoute(
+        path: RouteConstants.ashaAllScreenings,
+        builder: (context, state) => const AshaAllScreeningsScreen(),
+      ),
+      GoRoute(
+        path: RouteConstants.ashaReferralManagement,
+        builder: (context, state) => const AshaReferralManagementScreen(),
+      ),
+      GoRoute(
+        path: RouteConstants.ashaFollowups,
+        builder: (context, state) => const AshaFollowupsScreen(),
+      ),
+      GoRoute(
+        path: RouteConstants.parentReferrals,
+        builder: (context, state) => const ParentReferralsScreen(),
+      ),
+      GoRoute(
+        path: RouteConstants.parentFollowups,
+        builder: (context, state) => const ParentFollowupsScreen(),
       ),
       GoRoute(
         path: RouteConstants.ashaBoaTest,

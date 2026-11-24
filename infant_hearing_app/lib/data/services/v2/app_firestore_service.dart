@@ -390,4 +390,16 @@ class AppFirestoreService {
     
     await _db.collection('followups').doc(followupId).update(updates);
   }
+
+  /// Get all followups for a child (used by parents to view/confirm attendance)
+  Stream<List<Followup>> getFollowupsForChild(String childId) {
+    return _db
+        .collection('followups')
+        .where('childId', isEqualTo: childId)
+        .orderBy('visitDate', descending: true)
+        .snapshots()
+        .map((snap) => snap.docs
+            .map((doc) => Followup.fromFirestore(doc))
+            .toList());
+  }
 }

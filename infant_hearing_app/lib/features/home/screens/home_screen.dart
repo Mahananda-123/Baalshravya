@@ -140,6 +140,20 @@ class HomeScreen extends StatelessWidget {
                       color: AppColors.warning,
                       onTap: () => context.push(RouteConstants.medicalInsights),
                     ),
+                    QuickActionTile(
+                      icon: Icons.medical_information_rounded,
+                      label: 'My Referrals',
+                      subtitle: 'View & respond',
+                      color: AppColors.error,
+                      onTap: () => context.push(RouteConstants.parentReferrals),
+                    ),
+                    QuickActionTile(
+                      icon: Icons.event_available_rounded,
+                      label: 'My Follow-ups',
+                      subtitle: 'View & confirm',
+                      color: AppColors.accent,
+                      onTap: () => context.push(RouteConstants.parentFollowups),
+                    ),
                   ],
                 ),
 

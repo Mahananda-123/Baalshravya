@@ -14,6 +14,7 @@ import '../../parent/providers/parent_provider.dart' as infant_parent;
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/language_switcher.dart';
 import '../providers/questionnaire_provider.dart';
+import '../models/questionnaire_data.dart';
 import '../widgets/question_card.dart';
 import '../widgets/section_progress_header.dart';
 import 'questionnaire_result_screen.dart';
@@ -35,6 +36,7 @@ class _QuestionnaireScreenState extends State<QuestionnaireScreen> with WidgetsB
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final args = widget.arguments;
       final int ageMonths;
+      final bool filledByAsha = args != null && args['filledByAsha'] == true;
       
       if (args != null && args.containsKey('ageMonths')) {
         ageMonths = args['ageMonths'] as int;
@@ -43,7 +45,12 @@ class _QuestionnaireScreenState extends State<QuestionnaireScreen> with WidgetsB
         ageMonths = baby?.ageMonths ?? 0;
       }
       
-      context.read<QuestionnaireProvider>().initialize(ageMonths);
+      context.read<QuestionnaireProvider>().initialize(
+        ageMonths,
+        respondent: filledByAsha
+            ? QuestionnaireRespondent.ashaWorker
+            : QuestionnaireRespondent.parent,
+      );
     });
   }
 

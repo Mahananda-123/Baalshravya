@@ -149,4 +149,69 @@ class AshaProvider extends ChangeNotifier {
   }) async {
     // Bridges questionnaire result to the new Screening model
   }
+
+  DateTime? _lastSynced;
+  DateTime? get lastSynced => _lastSynced;
+
+  /// Re-fetches the profile. The data streams (children/referrals/followups)
+  /// are live and auto-update, so this mainly refreshes the profile and
+  /// records the sync time for the UI.
+  Future<void> refresh() async {
+    if (_asha != null) {
+      await fetchProfile(_asha!.uid);
+    }
+    _lastSynced = DateTime.now();
+    notifyListeners();
+  }
+
+  /// Creates an emergency referral for [infant].
+  Future<String> createEmergencyReferral({
+    required Child infant,
+    required String reason,
+    required String hospital,
+  }) async {
+    final referral = Referral(
+      referralId: '',
+      childId: infant.childId,
+      ashaId: _asha?.uid ?? '',
+      screeningId: '',
+      reason: reason,
+      hospital: hospital,
+      status: 'pending',
+      date: DateTime.now(),
+    );
+    return _firestoreService.createReferral(referral);
+  }
+
+  /// Update a referral's status (coordinate the referral workflow).
+  Future<void> updateReferralStatus(
+    String referralId,
+    String status, {
+    String? notes,
+  }) async {
+    await _firestoreService.updateReferralStatus(referralId, status, notes: notes);
+    notifyListeners();
+  }
+
+  /// Mark a follow-up as completed.
+  Future<void> completeFollowup(String followupId, {String? notes}) async {
+    await _firestoreService.completeFollowup(followupId, notes: notes);
+    notifyListeners();
+  }
+
+  /// Schedule a new follow-up for an infant.
+  Future<String> scheduleFollowup({
+    required Child infant,
+    required DateTime visitDate,
+    String? notes,
+  }) async {
+    final followup = Followup(
+      followupId: '',
+      childId: infant.childId,
+      ashaId: _asha?.uid ?? '',
+      visitDate: visitDate,
+      notes: notes,
+    );
+    return _firestoreService.scheduleFollowup(followup);
+  }
 }
